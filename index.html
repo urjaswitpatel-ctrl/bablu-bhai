@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BABLU BHAI - The Face You Pull Like Taffy</title>
+<link rel="icon" href="data:,">
 <style>
   :root{
     --ink:#101013; --mint:#9df2d7; --red:#e33224; --cream:#f4efe6; --grey:#8b8b93;
@@ -429,6 +430,7 @@ animate();
 // ---------- page bits ----------
 const words='FACES WORTH ARGUING WITH • MOUSTACHE APPROVED • CHAI ON STANDBY • POKING HAS CONSEQUENCES • ';
 document.getElementById('mq').textContent=(words.repeat(6));
+if(matchMedia('(pointer:coarse)').matches) document.getElementById('hint').textContent='Tap him, drag his nose - every poke gets a reaction';
 document.getElementById('signform').addEventListener('submit', e=>{
   e.preventDefault();
   const v=document.getElementById('signmail').value.trim();
