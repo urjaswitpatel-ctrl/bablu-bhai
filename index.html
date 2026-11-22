@@ -239,18 +239,30 @@ hero.addEventListener('pointermove', e=>{
   px=((e.clientX-r.left)/r.width)*2-1;
   py=-(((e.clientY-r.top)/r.height)*2-1);
 });
-function zoneAt(){ // rough face map from pointer position
-  if(px<-.55||px>.55||py<-.5||py>.75) return null;
-  if(py>.45) return 'brow';
-  if(py>.05) return px<0?'eyeL':'eyeR';
-  if(py>-.28) return 'nose';
-  if(py>-.52) return 'mo';
+function faceAnchor(){ // face center + radius in client px, from live projection
+  const r=hero.getBoundingClientRect();
+  const c=new THREE.Vector3(); headG.getWorldPosition(c);
+  const top=c.clone(); top.y+=1.0;
+  const pc=c.clone().project(camera), pt=top.project(camera);
+  const cx=r.left+(pc.x+1)/2*r.width, cy=r.top+(1-(pc.y+1)/2)*r.height;
+  const ty=r.top+(1-(pt.y+1)/2)*r.height;
+  return {cx, cy, R:Math.max(20, Math.abs(ty-cy))};
+}
+window.babluFace=faceAnchor; // lets touch users' taps (and tests) find the face
+function zoneAt(x,y){
+  const {cx,cy,R}=faceAnchor();
+  const dx=(x-cx)/R, dy=(cy-y)/R;
+  if(Math.abs(dx)>1.35||dy>1.6||dy<-1.5) return null;
+  if(dy>.75) return 'brow';
+  if(dy>.15) return dx<0?'eyeL':'eyeR';
+  if(dy>-.35) return 'nose';
+  if(dy>-.8) return 'mo';
   return 'mouth';
 }
 let lastZone=null, zoneSince=0;
-hero.addEventListener('pointermove', ()=>{
+hero.addEventListener('pointermove', (e)=>{
   if(exploded) return;
-  const z=zoneAt(), now=performance.now();
+  const z=zoneAt(e.clientX,e.clientY), now=performance.now();
   if(z!==lastZone){ lastZone=z; zoneSince=now; return; }
   if(!z || mood!=='idle') return;
   const dwell=now-zoneSince;
@@ -270,7 +282,7 @@ hero.addEventListener('pointerdown', (e)=>{
   if(touch){ // no hover on phones: a tap also plays the zone's reaction
     const r=hero.getBoundingClientRect();
     px=((e.clientX-r.left)/r.width)*2-1; py=-(((e.clientY-r.top)/r.height)*2-1);
-    const z=zoneAt();
+    const z=zoneAt(e.clientX,e.clientY);
     if(mood==='idle'){
       if(z==='eyeL') setMood('winkL','Bablu Bhai winks. You two have a secret now.');
       else if(z==='eyeR') setMood('winkR','A slow wink from the right eye.');
