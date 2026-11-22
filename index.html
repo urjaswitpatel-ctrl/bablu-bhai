@@ -16,7 +16,7 @@
   #stage{position:absolute;inset:0;z-index:3}
   .bigtitle{position:absolute;z-index:2;top:8vh;left:50%;transform:translateX(-50%);
     font-family:'Arial Black','Arial Narrow',Arial,sans-serif;font-weight:900;
-    font-size:clamp(64px,14.5vw,230px);letter-spacing:-.02em;color:var(--mint);
+    font-size:clamp(44px,14.5vw,230px);letter-spacing:-.02em;color:var(--mint);
     white-space:nowrap;line-height:.9;text-align:center;pointer-events:none}
   .circle{position:absolute;z-index:1;left:50%;top:56%;transform:translate(-50%,-50%);
     width:min(58vh,80vw);height:min(58vh,80vw);border-radius:50%;background:var(--red);pointer-events:none;
@@ -69,6 +69,7 @@
     font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:13px 22px;cursor:pointer}
   .signup button:hover{background:var(--mint)}
   #signmsg{margin-top:14px;font-size:13px;font-style:italic;color:var(--mint);min-height:18px}
+  .signote{margin-top:8px;font-size:11px;color:var(--grey);letter-spacing:.04em}
   footer{border-top:1px solid rgba(157,242,215,.14);padding:34px 24px;text-align:center;font-size:12px;color:var(--grey)}
   @media (max-width:760px){
     .pitch{left:18px;bottom:170px;max-width:180px}
@@ -125,6 +126,7 @@
     <button type="submit">Count me in</button>
   </form>
   <p id="signmsg"></p>
+  <p class="signote">Demo form - it stores and sends nothing. Bablu Bhai collects no emails.</p>
 </section>
 
 <footer>BABLU BHAI - an interactive character study. Built for the love of faces that argue back.</footer>
@@ -260,8 +262,24 @@ hero.addEventListener('pointermove', ()=>{
   else if(z==='nose'){ pull.on=true; }
 });
 hero.addEventListener('pointerleave', ()=>{ pull.on=false; lastZone=null; });
-hero.addEventListener('pointerdown', ()=>{
+hero.addEventListener('pointerup', ()=>{ pull.on=false; });
+hero.addEventListener('pointercancel', ()=>{ pull.on=false; lastZone=null; });
+hero.addEventListener('pointerdown', (e)=>{
   if(exploded) return;
+  const touch=e.pointerType==='touch';
+  if(touch){ // no hover on phones: a tap also plays the zone's reaction
+    const r=hero.getBoundingClientRect();
+    px=((e.clientX-r.left)/r.width)*2-1; py=-(((e.clientY-r.top)/r.height)*2-1);
+    const z=zoneAt();
+    if(mood==='idle'){
+      if(z==='eyeL') setMood('winkL','Bablu Bhai winks. You two have a secret now.');
+      else if(z==='eyeR') setMood('winkR','A slow wink from the right eye.');
+      else if(z==='brow') setMood('scowl','The eyebrows come down. Mind your manners.');
+      else if(z==='mouth') setMood('gasp','He gasps. Scandalised.');
+      else if(z==='mo') setMood('twirl','He twirls it himself. Pride, maintained.');
+      else if(z==='nose') pull.on=true;
+    }
+  }
   const now=performance.now();
   pokes=pokes.filter(t=>now-t<2600); pokes.push(now);
   anger=Math.min(1, anger+.18);
