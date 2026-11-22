@@ -72,12 +72,18 @@
   .signote{margin-top:8px;font-size:11px;color:var(--grey);letter-spacing:.04em}
   footer{border-top:1px solid rgba(157,242,215,.14);padding:34px 24px;text-align:center;font-size:12px;color:var(--grey)}
   @media (max-width:760px){
-    .pitch{left:18px;bottom:170px;max-width:180px}
-    .pitch h2{font-size:16px}
-    .stats{right:18px;bottom:170px;gap:10px 16px}
-    .stat b{font-size:22px}
-    .hint{bottom:140px;width:90%}
+    .bigtitle{top:6vh}
+    .pitch{top:15vh;bottom:auto;left:18px;right:18px;max-width:none}
+    .pitch h2{font-size:17px}
+    .pitch p{max-width:310px}
+    .stats{top:37vh;bottom:auto;left:18px;right:18px;grid-template-columns:repeat(4,1fr);gap:8px}
+    .stat b{font-size:20px}
+    .stat span{font-size:8px;letter-spacing:.08em}
+    .hint{bottom:52px;width:92%}
     .tag-tr{display:none}
+    .tag-tl{font-size:9px;top:12px;left:16px}
+    .circle{width:74vw;height:74vw;top:72%}
+    #chaibreak{top:72%}
   }
 </style>
 </head>
@@ -154,7 +160,12 @@ const redLight = new THREE.PointLight(0xff2a18, 0, 14); redLight.position.set(0,
 function size(){
   const w = stage.clientWidth, h = stage.clientHeight;
   renderer.setSize(w,h); camera.aspect = w/h; camera.updateProjectionMatrix();
+  const a = w/h;
+  const s = .8*Math.min(1, a*1.35);
+  bablu.scale.set(s,s,s);
+  homeY = a<.75 ? -1.55 : -1.15;
 }
+let homeY = -1.15;
 addEventListener('resize', size);
 
 const SKIN=0xc98a5e, SKIN_D=0xb2734a, TURBAN=0x8e1f2f, KURTA=0x9df2d7, HAIR=0x17141a;
@@ -356,7 +367,7 @@ function animate(){
     renderer.render(scene,camera); return;
   }
   // ease drop-in
-  bablu.position.y += (-1.15-bablu.position.y)*.06;
+  bablu.position.y += (homeY-bablu.position.y)*.06;
   // idle breathing + slight lean toward cursor
   body.scale.y=1+Math.sin(t*1.6)*.012;
   bablu.rotation.y += (px*.28-bablu.rotation.y)*.06;
