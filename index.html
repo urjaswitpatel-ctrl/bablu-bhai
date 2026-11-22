@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BABLU BHAI - The Face You Pull Like Taffy</title>
+<style>
+  :root{
+    --ink:#101013; --mint:#9df2d7; --red:#e33224; --cream:#f4efe6; --grey:#8b8b93;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--ink);color:var(--cream);font-family:Georgia,'Times New Roman',serif;overflow-x:hidden}
+  .cond{font-family:'Arial Narrow','Helvetica Neue',Arial,sans-serif;font-stretch:condensed}
+  .hero{position:relative;height:100vh;min-height:640px;overflow:hidden;cursor:crosshair}
+  #stage{position:absolute;inset:0;z-index:3}
+  .bigtitle{position:absolute;z-index:2;top:8vh;left:50%;transform:translateX(-50%);
+    font-family:'Arial Black','Arial Narrow',Arial,sans-serif;font-weight:900;
+    font-size:clamp(64px,14.5vw,230px);letter-spacing:-.02em;color:var(--mint);
+    white-space:nowrap;line-height:.9;text-align:center;pointer-events:none}
+  .circle{position:absolute;z-index:1;left:50%;top:56%;transform:translate(-50%,-50%);
+    width:min(58vh,80vw);height:min(58vh,80vw);border-radius:50%;background:var(--red);pointer-events:none;
+    transition:transform .6s cubic-bezier(.2,1.6,.4,1)}
+  .blueprint{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(rgba(157,242,215,.06) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(157,242,215,.06) 1px,transparent 1px);
+    background-size:56px 56px}
+  .tag{position:absolute;z-index:4;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--grey);pointer-events:none}
+  .tag b{color:var(--mint);font-weight:400}
+  .tag-tl{top:22px;left:26px}
+  .tag-tr{top:22px;right:26px;text-align:right}
+  .pitch{position:absolute;z-index:4;left:26px;bottom:110px;max-width:230px;pointer-events:none}
+  .pitch h2{font-size:20px;line-height:1.25;font-style:italic;color:var(--cream)}
+  .pitch p{margin-top:10px;font-size:12px;line-height:1.6;color:var(--grey)}
+  .stats{position:absolute;z-index:4;right:26px;bottom:110px;display:grid;grid-template-columns:1fr 1fr;gap:14px 26px;pointer-events:none}
+  .stat b{display:block;font-family:'Arial Black',Arial,sans-serif;font-size:30px;color:var(--cream)}
+  .stat.hot b{color:var(--red)}
+  .stat span{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+  .hint{position:absolute;z-index:4;left:50%;bottom:86px;transform:translateX(-50%);
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--grey);
+    animation:pulse 2.2s ease-in-out infinite;pointer-events:none;text-align:center}
+  @keyframes pulse{50%{opacity:.35}}
+  #reaction{position:absolute;z-index:5;left:50%;top:16%;transform:translateX(-50%);
+    font-family:'Arial Black',Arial,sans-serif;font-size:clamp(18px,3vw,34px);color:var(--cream);
+    text-transform:uppercase;letter-spacing:.06em;opacity:0;transition:opacity .25s;pointer-events:none;
+    text-shadow:0 2px 18px rgba(0,0,0,.6);white-space:nowrap}
+  #chaibreak{position:absolute;z-index:6;left:50%;top:56%;transform:translate(-50%,-50%) scale(.6);
+    text-align:center;opacity:0;pointer-events:none;transition:opacity .3s,transform .5s cubic-bezier(.2,1.8,.4,1)}
+  #chaibreak.on{opacity:1;transform:translate(-50%,-50%) scale(1)}
+  #chaibreak h3{font-family:'Arial Black',Arial,sans-serif;font-size:clamp(28px,5vw,54px);color:var(--ink)}
+  #chaibreak p{font-size:13px;color:var(--ink);font-style:italic;margin-top:6px}
+  .marquee{position:absolute;z-index:4;bottom:0;left:0;right:0;background:var(--red);color:var(--ink);
+    overflow:hidden;padding:10px 0;white-space:nowrap}
+  .marquee div{display:inline-block;animation:mq 22s linear infinite;
+    font-family:'Arial Black',Arial,sans-serif;font-size:14px;letter-spacing:.12em;text-transform:uppercase}
+  @keyframes mq{to{transform:translateX(-50%)}}
+  .section{max-width:920px;margin:0 auto;padding:90px 24px}
+  .section h2{font-family:'Arial Black',Arial,sans-serif;font-size:clamp(30px,5vw,52px);color:var(--mint);text-transform:uppercase;letter-spacing:-.01em}
+  .section .sub{font-style:italic;color:var(--grey);margin-top:12px;font-size:16px;line-height:1.6;max-width:520px}
+  .moves{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:40px}
+  .move{border:1px solid rgba(157,242,215,.18);padding:18px}
+  .move b{font-family:'Arial Black',Arial,sans-serif;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--cream)}
+  .move p{font-size:12px;color:var(--grey);margin-top:8px;line-height:1.55}
+  .signup{display:flex;gap:10px;margin-top:34px;max-width:460px;flex-wrap:wrap}
+  .signup input{flex:1;min-width:200px;background:transparent;border:1px solid rgba(157,242,215,.35);
+    color:var(--cream);padding:13px 16px;font-family:inherit;font-size:14px;outline:none}
+  .signup input:focus{border-color:var(--mint)}
+  .signup button{background:var(--red);border:0;color:var(--ink);font-family:'Arial Black',Arial,sans-serif;
+    font-size:13px;letter-spacing:.1em;text-transform:uppercase;padding:13px 22px;cursor:pointer}
+  .signup button:hover{background:var(--mint)}
+  #signmsg{margin-top:14px;font-size:13px;font-style:italic;color:var(--mint);min-height:18px}
+  footer{border-top:1px solid rgba(157,242,215,.14);padding:34px 24px;text-align:center;font-size:12px;color:var(--grey)}
+  @media (max-width:760px){
+    .pitch{left:18px;bottom:170px;max-width:180px}
+    .pitch h2{font-size:16px}
+    .stats{right:18px;bottom:170px;gap:10px 16px}
+    .stat b{font-size:22px}
+    .hint{bottom:140px;width:90%}
+    .tag-tr{display:none}
+  }
+</style>
+</head>
+<body>
+<section class="hero" id="hero">
+  <div class="blueprint"></div>
+  <div class="circle" id="circle"></div>
+  <h1 class="bigtitle">BABLU&nbsp;BHAI</h1>
+  <div id="stage"></div>
+  <div class="tag tag-tl">Character designer. <b>The moustache chooses the face.</b></div>
+  <div class="tag tag-tr">EST. every Thursday<br><b>Handle with care</b></div>
+  <div class="pitch">
+    <h2>I draw faces people want to argue with.</h2>
+    <p>Poke him. Prod him. Pull his nose like taffy. Every jab gets an answer, and the moustache keeps score. Push too far and Bablu Bhai calls it: chai break.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><b>214</b><span>faces drawn</span></div>
+    <div class="stat hot"><b>61</b><span>moustaches approved</span></div>
+    <div class="stat"><b>9</b><span>cups before noon</span></div>
+    <div class="stat hot"><b>1</b><span>rule for you</span></div>
+  </div>
+  <div class="hint" id="hint">Move your mouse over him - every poke gets a reaction</div>
+  <div id="reaction"></div>
+  <div id="chaibreak"><h3>CHAI BREAK</h3><p>He will be back when the kettle whistles.</p></div>
+  <div class="marquee"><div id="mq"></div></div>
+</section>
+
+<section class="section" id="moves">
+  <h2>The face you pull like taffy</h2>
+  <p class="sub">This is not an animation on rails. Bablu Bhai is a real-time 3D character who watches your cursor, answers every poke, and loses his temper on a schedule of his own.</p>
+  <div class="moves">
+    <div class="move"><b>The Taffy Pull</b><p>Grab near his nose or cheeks and drag - his whole face stretches after your cursor and snaps back with a wobble.</p></div>
+    <div class="move"><b>The Wink</b><p>Hover an eye and he gives you the slow wink, like you two share a secret.</p></div>
+    <div class="move"><b>The Scowl</b><p>Linger on his forehead and the eyebrows come down. He has opinions about your manners.</p></div>
+    <div class="move"><b>The Gasp</b><p>Hover his mouth and he gasps - scandalised that you would do such a thing.</p></div>
+    <div class="move"><b>The Twirl</b><p>Brush the moustache and he twirls it himself. Pride, maintained on the hour.</p></div>
+    <div class="move"><b>The Chai Break</b><p>Keep poking and he steams, shakes, and explodes into a chai break. He always comes back. He always remembers.</p></div>
+  </div>
+</section>
+
+<section class="section" id="thursday">
+  <h2>The Thursday Sketch</h2>
+  <p class="sub">One bad idea and one good face, every Thursday. Leave, and he takes it personally.</p>
+  <form class="signup" id="signform">
+    <input type="email" id="signmail" placeholder="you@studio.com" aria-label="email">
+    <button type="submit">Count me in</button>
+  </form>
+  <p id="signmsg"></p>
+</section>
+
+<footer>BABLU BHAI - an interactive character study. Built for the love of faces that argue back.</footer>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+
+// ---------- scene ----------
+const stage = document.getElementById('stage');
+const hero = document.getElementById('hero');
+const renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.appendChild(renderer.domElement);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 100);
+camera.position.set(0, 1.5, 9);
+
+const hemi = new THREE.HemisphereLight(0xfff4e0, 0x202028, 1.05); scene.add(hemi);
+const key = new THREE.DirectionalLight(0xffffff, 1.6); key.position.set(3,5,6); scene.add(key);
+const redLight = new THREE.PointLight(0xff2a18, 0, 14); redLight.position.set(0,2.2,3.2); scene.add(redLight);
+
+function size(){
+  const w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w,h); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', size);
+
+const SKIN=0xc98a5e, SKIN_D=0xb2734a, TURBAN=0x8e1f2f, KURTA=0x9df2d7, HAIR=0x17141a;
+const mat = (c,r=.85)=>new THREE.MeshStandardMaterial({color:c, roughness:r, metalness:.02});
+
+// ---------- character ----------
+const bablu = new THREE.Group(); scene.add(bablu);
+const body = new THREE.Group(); bablu.add(body);
+const headG = new THREE.Group(); headG.position.y = 2.1; bablu.add(headG);
+
+// kurta torso
+const torso = new THREE.Mesh(new THREE.CylinderGeometry(.95,1.25,1.9,24), mat(KURTA,.9));
+torso.position.y=.35; body.add(torso);
+const shoulders = new THREE.Mesh(new THREE.SphereGeometry(1.02,24,18), mat(KURTA,.9));
+shoulders.scale.set(1.15,.55,.8); shoulders.position.y=1.22; body.add(shoulders);
+[[1.02,1.0],[.6,1.09],[.18,1.17]].forEach(([y,z])=>{ const b=new THREE.Mesh(new THREE.SphereGeometry(.07,10,10), mat(0xb23a2e,.5));
+  b.position.set(0,y,z); body.add(b); });
+// neck + head
+const neck = new THREE.Mesh(new THREE.CylinderGeometry(.34,.4,.5,16), mat(SKIN_D)); neck.position.y=1.55; body.add(neck);
+const head = new THREE.Mesh(new THREE.SphereGeometry(.95,32,28), mat(SKIN)); head.scale.set(.92,1.05,.9); headG.add(head);
+const jaw = new THREE.Mesh(new THREE.SphereGeometry(.7,24,20), mat(SKIN)); jaw.scale.set(.85,.8,.85); jaw.position.set(0,-.5,.18); headG.add(jaw);
+// ears
+for(const s of [-1,1]){ const e=new THREE.Mesh(new THREE.SphereGeometry(.2,14,12), mat(SKIN_D));
+  e.scale.set(.5,.9,.7); e.position.set(s*.88,.02,.05); headG.add(e); }
+// turban: stacked torus rings + dome
+const turban = new THREE.Group(); turban.position.y=.46; headG.add(turban);
+const dome = new THREE.Mesh(new THREE.SphereGeometry(1.04,24,18,0,Math.PI*2,0,Math.PI*.55), mat(TURBAN,.95));
+dome.scale.set(1,.95,1); turban.add(dome);
+for(let i=0;i<3;i++){ const ring=new THREE.Mesh(new THREE.TorusGeometry(.99-i*.05,.15,12,28), mat(i%2?0x7a1826:TURBAN,.95));
+  ring.rotation.x=Math.PI/2; ring.position.y=-.06+i*.19; ring.scale.set(1,1,.96); turban.add(ring); }
+const jewel = new THREE.Mesh(new THREE.SphereGeometry(.09,10,10), mat(0xd9a520,.3)); jewel.position.set(0,.45,.9); turban.add(jewel);
+
+// eyes: white + pupil (pupils track cursor); eyelid sphere for wink
+function makeEye(sx){
+  const g=new THREE.Group(); g.position.set(sx*.36,.12,.78); headG.add(g);
+  const white=new THREE.Mesh(new THREE.SphereGeometry(.21,18,14), mat(0xffffff,.35)); white.scale.set(1,1.15,.55); g.add(white);
+  const pupil=new THREE.Mesh(new THREE.SphereGeometry(.085,12,10), mat(0x241a12,.3)); pupil.position.z=.13; g.add(pupil);
+  const lid=new THREE.Mesh(new THREE.SphereGeometry(.225,18,14), mat(SKIN)); lid.scale.set(1.04,0, .6); lid.position.z=.02; g.add(lid);
+  return {g,pupil,lid};
+}
+const eyeL=makeEye(-1), eyeR=makeEye(1);
+// brows
+function makeBrow(sx){
+  const b=new THREE.Mesh(new THREE.BoxGeometry(.42,.09,.1), mat(HAIR,.9));
+  b.position.set(sx*.37,.48,.82); b.rotation.z=sx*-.08; headG.add(b); return b;
+}
+const browL=makeBrow(-1), browR=makeBrow(1);
+// nose (the taffy handle)
+const noseG=new THREE.Group(); noseG.position.set(0,-.12,.86); headG.add(noseG);
+const nose=new THREE.Mesh(new THREE.SphereGeometry(.2,16,14), mat(SKIN_D)); nose.scale.set(.85,1.15,.9); noseG.add(nose);
+// moustache: two curled halves
+function makeMo(sx){
+  const g=new THREE.Group(); g.position.set(sx*.14,-.44,.84); headG.add(g);
+  const base=new THREE.Mesh(new THREE.SphereGeometry(.3,16,12), mat(HAIR,.8));
+  base.scale.set(1.3,.52,.45); base.rotation.z=sx*-.3; g.add(base);
+  const tipG=new THREE.Group(); tipG.position.set(sx*.36,-.16,0); g.add(tipG);
+  const curl=new THREE.Mesh(new THREE.TorusGeometry(.12,.055,10,16,Math.PI*1.5), mat(HAIR,.8));
+  curl.position.set(sx*.06,.12,.02); curl.rotation.z=sx*(sx>0?-.9:Math.PI+.9); tipG.add(curl);
+  return {g,tipG};
+}
+const moL=makeMo(-1), moR=makeMo(1);
+// mouth: smile curve + gasp O (toggled)
+const smile=new THREE.Mesh(new THREE.TorusGeometry(.22,.045,10,20,Math.PI*.9), mat(0x6e3a26,.7));
+smile.position.set(0,-.66,.82); smile.rotation.z=Math.PI*1.05; headG.add(smile);
+const gasp=new THREE.Mesh(new THREE.SphereGeometry(.13,14,12), mat(0x3a1d14,.8));
+gasp.position.set(0,-.68,.86); gasp.scale.set(1,0,.5); headG.add(gasp);
+
+bablu.scale.set(.8,.8,.8); bablu.position.y=-1.15;
+size();
+// ---------- interaction ----------
+const say=(t,ms=1400)=>{ const el=document.getElementById('reaction');
+  el.textContent=t; el.style.opacity=1; clearTimeout(say.t);
+  say.t=setTimeout(()=>el.style.opacity=0,ms); };
+
+let px=0, py=0;                 // pointer in -1..1 over hero
+let pull={x:0,y:0,tx:0,ty:0,on:false};   // taffy stretch state
+let anger=0, mood='idle', moodT=0, pokes=[];
+let exploded=false, reformAt=0;
+
+hero.addEventListener('pointermove', e=>{
+  const r=hero.getBoundingClientRect();
+  px=((e.clientX-r.left)/r.width)*2-1;
+  py=-(((e.clientY-r.top)/r.height)*2-1);
+});
+function zoneAt(){ // rough face map from pointer position
+  if(px<-.55||px>.55||py<-.5||py>.75) return null;
+  if(py>.45) return 'brow';
+  if(py>.05) return px<0?'eyeL':'eyeR';
+  if(py>-.28) return 'nose';
+  if(py>-.52) return 'mo';
+  return 'mouth';
+}
+let lastZone=null, zoneSince=0;
+hero.addEventListener('pointermove', ()=>{
+  if(exploded) return;
+  const z=zoneAt(), now=performance.now();
+  if(z!==lastZone){ lastZone=z; zoneSince=now; return; }
+  if(!z || mood!=='idle') return;
+  const dwell=now-zoneSince;
+  if(z==='eyeL'&&dwell>250) setMood('winkL','Bablu Bhai winks. You two have a secret now.');
+  else if(z==='eyeR'&&dwell>250) setMood('winkR','A slow wink from the right eye.');
+  else if(z==='brow'&&dwell>500) setMood('scowl','The eyebrows come down. Mind your manners.');
+  else if(z==='mouth'&&dwell>350) setMood('gasp','He gasps. Scandalised.');
+  else if(z==='mo'&&dwell>300) setMood('twirl','He twirls it himself. Pride, maintained.');
+  else if(z==='nose'){ pull.on=true; }
+});
+hero.addEventListener('pointerleave', ()=>{ pull.on=false; lastZone=null; });
+hero.addEventListener('pointerdown', ()=>{
+  if(exploded) return;
+  const now=performance.now();
+  pokes=pokes.filter(t=>now-t<2600); pokes.push(now);
+  anger=Math.min(1, anger+.18);
+  if(pokes.length>=4) say('Oye! Again?!', 900);
+  else say(['Ha!','Oho.','Hmm.','Careful.'][Math.floor(Math.random()*4)], 700);
+  if(anger>=.62&&mood!=='mad') setMood('mad','He is STEAMING. Stop poking.', 2200);
+});
+
+function setMood(m, line, ms=1500){
+  mood=m; moodT=performance.now()+ms; if(line) say(line, ms);
+  if(m==='twirl') moodT=performance.now()+1700;
+}
+function explode(){
+  exploded=true; reformAt=performance.now()+4200;
+  bablu.visible=false;
+  document.getElementById('chaibreak').classList.add('on');
+  document.getElementById('circle').style.transform='translate(-50%,-50%) scale(1.12)';
+  burst();
+  say('', 1);
+}
+// steam + explosion particles
+const P=220, pgeo=new THREE.BufferGeometry();
+const ppos=new Float32Array(P*3), pvel=[];
+pgeo.setAttribute('position', new THREE.BufferAttribute(ppos,3));
+for(let i=0;i<P;i++){ ppos[i*3+1]=-50; pvel.push([0,0,0]); }
+const pts=new THREE.Points(pgeo, new THREE.PointsMaterial({color:0x9df2d7,size:.07,transparent:true,opacity:0}));
+scene.add(pts);
+let steamOn=false, burstOn=false;
+function burst(){
+  burstOn=true; pts.material.opacity=1;
+  const cols=[0x9df2d7,0xe33224,0xf4efe6,0x8e1f2f];
+  pts.material.vertexColors=false;
+  for(let i=0;i<P;i++){
+    ppos[i*3]=(Math.random()-.5)*1.4; ppos[i*3+1]=1.2+(Math.random()-.5)*1.6; ppos[i*3+2]=(Math.random()-.5)*.8;
+    const a=Math.random()*Math.PI*2, s=.05+Math.random()*.16;
+    pvel[i]=[Math.cos(a)*s, .06+Math.random()*.14, Math.sin(a)*s*.5];
+  }
+  pgeo.attributes.position.needsUpdate=true;
+}
+const clock=new THREE.Clock();
+function animate(){
+  requestAnimationFrame(animate);
+  const t=clock.getElapsedTime(), now=performance.now();
+  if(exploded){
+    if(burstOn){ // particles fly + fade
+      for(let i=0;i<P;i++){ ppos[i*3]+=pvel[i][0]; ppos[i*3+1]+=pvel[i][1]; ppos[i*3+2]+=pvel[i][2];
+        pvel[i][1]-=.0035; }
+      pgeo.attributes.position.needsUpdate=true;
+      pts.material.opacity=Math.max(0,(reformAt-now-2200)/2000);
+    }
+    if(now>reformAt){ // he comes back
+      exploded=false; burstOn=false; pts.material.opacity=0;
+      bablu.visible=true; anger=0; pokes=[];
+      document.getElementById('chaibreak').classList.remove('on');
+      document.getElementById('circle').style.transform='translate(-50%,-50%) scale(1)';
+      bablu.position.y=-6; anger=0; // drops back in
+      say('Chai done. He remembers everything.', 2200);
+      for(let i=0;i<P;i++) ppos[i*3+1]=-50;
+      pgeo.attributes.position.needsUpdate=true;
+    }
+    renderer.render(scene,camera); return;
+  }
+  // ease drop-in
+  bablu.position.y += (-1.15-bablu.position.y)*.06;
+  // idle breathing + slight lean toward cursor
+  body.scale.y=1+Math.sin(t*1.6)*.012;
+  bablu.rotation.y += (px*.28-bablu.rotation.y)*.06;
+  bablu.rotation.x += (-py*.1-bablu.rotation.x)*.06;
+  // pupils track cursor
+  for(const e of [eyeL,eyeR]){ e.pupil.position.x += (px*.09-e.pupil.position.x)*.2;
+    e.pupil.position.y += (py*.07-e.pupil.position.y)*.2; }
+  // taffy pull
+  if(pull.on&&lastZone==='nose'){ pull.tx=px*.9; pull.ty=py*.6; } else { pull.tx=0; pull.ty=0; }
+  pull.x+=(pull.tx-pull.x)*.12; pull.y+=(pull.ty-pull.y)*.12;
+  const stretch=Math.min(1,Math.hypot(pull.x,pull.y)*1.4);
+  headG.position.x=pull.x*.8; headG.position.y=2.1+pull.y*.5;
+  headG.scale.set(1+Math.abs(pull.x)*.35+stretch*.1, 1-Math.abs(pull.x)*.12+Math.abs(pull.y)*.25, 1);
+  noseG.position.x=pull.x*.6; noseG.position.y=-.12+pull.y*.4;
+  nose.scale.set(.85+stretch*.5,1.15+stretch*.6,.9);
+  if(stretch>.5&&mood==='idle') say('Taffy. Actual taffy.',800);
+  // moods
+  if(mood!=='idle'&&now>moodT&&mood!=='mad') mood='idle';
+  const winkL=mood==='winkL', winkR=mood==='winkR';
+  eyeL.lid.scale.y += (((winkL)?1.1:0)-eyeL.lid.scale.y)*.3;
+  eyeR.lid.scale.y += (((winkR)?1.1:0)-eyeR.lid.scale.y)*.3;
+  const scowl=mood==='scowl'||mood==='mad';
+  browL.rotation.z += (((scowl)?.45:-.08)-browL.rotation.z)*.18;
+  browR.rotation.z += (((scowl)?-.45:.08)-browR.rotation.z)*.18;
+  browL.position.y += (((scowl)?.4:.48)-browL.position.y)*.18;
+  browR.position.y += (((scowl)?.4:.48)-browR.position.y)*.18;
+  const gaspOn=mood==='gasp';
+  gasp.scale.y += (((gaspOn)?1.2:0)-gasp.scale.y)*.25;
+  smile.visible=!gaspOn;
+  const twirl=mood==='twirl';
+  moL.tipG.rotation.z += (((twirl)?2.2:0)-moL.tipG.rotation.z)*.15;
+  moR.tipG.rotation.z += (((twirl)?-2.2:0)-moR.tipG.rotation.z)*.15;
+  // mad: red light, shake, steam
+  if(mood==='mad'){
+    redLight.intensity=2.4+Math.sin(t*20)*.8;
+    headG.position.x += (Math.random()-.5)*.04;
+    steamOn=true;
+    if(now>moodT+1200) anger=Math.min(1,anger+.004);
+    if(anger>=1){ explode(); }
+  } else {
+    redLight.intensity*=.9; steamOn=anger>.45;
+    anger=Math.max(0,anger-.0016);
+  }
+  if(steamOn){ // gentle steam puffs above turban
+    for(let k=0;k<2;k++){ const i=Math.floor(Math.random()*P);
+      if(ppos[i*3+1]<-10||Math.random()<.4){
+        ppos[i*3]=(Math.random()-.5)*.5; ppos[i*3+1]=3.1; ppos[i*3+2]=0;
+        pvel[i]=[(Math.random()-.5)*.01,.03+Math.random()*.03,0];
+      }
+      ppos[i*3]+=pvel[i][0]; ppos[i*3+1]+=pvel[i][1];
+      if(ppos[i*3+1]>4.6) ppos[i*3+1]=-50;
+    }
+    pts.material.opacity=.5; pgeo.attributes.position.needsUpdate=true;
+  } else if(!burstOn){ pts.material.opacity*=.9; }
+  renderer.render(scene,camera);
+}
+animate();
+
+// ---------- page bits ----------
+const words='FACES WORTH ARGUING WITH • MOUSTACHE APPROVED • CHAI ON STANDBY • POKING HAS CONSEQUENCES • ';
+document.getElementById('mq').textContent=(words.repeat(6));
+document.getElementById('signform').addEventListener('submit', e=>{
+  e.preventDefault();
+  const v=document.getElementById('signmail').value.trim();
+  const msg=document.getElementById('signmsg');
+  if(!/^\S+@\S+\.\S+$/.test(v)){ msg.textContent='Bablu Bhai squints. That is not an email.'; return; }
+  msg.textContent='Done. First sketch lands Thursday. He is already judging it.';
+  document.getElementById('signmail').value='';
+});
+</script>
+</body>
+</html>
