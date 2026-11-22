@@ -279,16 +279,17 @@ hero.addEventListener('pointercancel', ()=>{ pull.on=false; lastZone=null; });
 hero.addEventListener('pointerdown', (e)=>{
   if(exploded) return;
   const touch=e.pointerType==='touch';
+  let reacted=false;
   if(touch){ // no hover on phones: a tap also plays the zone's reaction
     const r=hero.getBoundingClientRect();
     px=((e.clientX-r.left)/r.width)*2-1; py=-(((e.clientY-r.top)/r.height)*2-1);
     const z=zoneAt(e.clientX,e.clientY);
     if(mood==='idle'){
-      if(z==='eyeL') setMood('winkL','Bablu Bhai winks. You two have a secret now.');
-      else if(z==='eyeR') setMood('winkR','A slow wink from the right eye.');
-      else if(z==='brow') setMood('scowl','The eyebrows come down. Mind your manners.');
-      else if(z==='mouth') setMood('gasp','He gasps. Scandalised.');
-      else if(z==='mo') setMood('twirl','He twirls it himself. Pride, maintained.');
+      if(z==='eyeL'){ setMood('winkL','Bablu Bhai winks. You two have a secret now.'); reacted=true; }
+      else if(z==='eyeR'){ setMood('winkR','A slow wink from the right eye.'); reacted=true; }
+      else if(z==='brow'){ setMood('scowl','The eyebrows come down. Mind your manners.'); reacted=true; }
+      else if(z==='mouth'){ setMood('gasp','He gasps. Scandalised.'); reacted=true; }
+      else if(z==='mo'){ setMood('twirl','He twirls it himself. Pride, maintained.'); reacted=true; }
       else if(z==='nose') pull.on=true;
     }
   }
@@ -296,7 +297,7 @@ hero.addEventListener('pointerdown', (e)=>{
   pokes=pokes.filter(t=>now-t<2600); pokes.push(now);
   anger=Math.min(1, anger+.18);
   if(pokes.length>=4) say('Oye! Again?!', 900);
-  else say(['Ha!','Oho.','Hmm.','Careful.'][Math.floor(Math.random()*4)], 700);
+  else if(!reacted) say(['Ha!','Oho.','Hmm.','Careful.'][Math.floor(Math.random()*4)], 700);
   if(anger>=.62&&mood!=='mad') setMood('mad','He is STEAMING. Stop poking.', 2200);
 });
 
